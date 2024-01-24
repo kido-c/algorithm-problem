@@ -3,3 +3,5 @@ let input = fs
   .readFileSync(__dirname + "/input.txt")
   .toString()
   .trim();
+
+  
