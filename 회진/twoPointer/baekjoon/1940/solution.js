@@ -9,8 +9,6 @@ const material = input[2]
   .split(" ")
   .map(Number)
   .sort((a, b) => a - b);
-console.log(input);
-console.log(material);
 
 let num = 0;
 for (let i = 0; i < N - 1; i++) {
