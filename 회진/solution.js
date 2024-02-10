@@ -1,21 +1,34 @@
-// 타겟 넘버
+// 게임 맵 최단거리
 
-function solution(numbers, target) {
-  let answer = 0; // 타겟 넘버를 만드는 경우의 수
+function solution(maps) {
+  const N = maps.length; //y
+  const M = maps[0].length; //x
+  const goalY = N - 1; //최종지점 y
+  const goalX = M - 1; //최종지점 x
+  const dy = [0, 0, 1, -1];
+  const dx = [-1, 1, 0, 0];
 
-  const dfs = (idx, sum) => {
-    // dfs 재귀함수에 현재 인덱스와 총합을 매개변수로 넘겨줌
-    if (idx === numbers.length) {
-      // 만약 인덱스가 numbers 배열의 길이와 같다면 재귀를 다 돈 거기때문에
-      if (sum === target) answer++; // 총합이 타겟 넘버와 같다면 경우의 수를 +1
-      return;
+  const queue = [];
+  queue.push([0, 0, 1]);
+
+  while (queue.length) {
+    const [curY, curX, move] = queue.shift(); // 현재 y, 현재 x, 이동한 칸수를 큐에 넣어줌 이동한 칸수를 넣어주지 않으면 반복문 4번 돌아야해서 런타임 에러 남
+    if (curY === goalY && curX === goalX) return move;
+
+    for (let i = 0; i < 4; i++) {
+      const ny = curY + dy[i]; //현재위치에서 한칸씩 옮겨감
+      const nx = curX + dx[i];
+      if (ny >= 0 && ny < N && nx >= 0 && nx < M && maps[ny][nx] === 1) {
+        // 좌표를 벗어나지 않았고 옮길 수 있는 거리라면
+        queue.push([ny, nx, move + 1]); // 큐에 현재 좌표를 넣어주고
+        maps[ny][nx] = 0; // 현재 좌표는 다시 못 가도록 0으로 변경
+      }
     }
+  }
 
-    dfs(idx + 1, sum + numbers[idx]); // 현재 인덱스의 다음 인덱스와, 총합에서 현재 인덱스의 값을 더한값/뺀 값으로 재귀함수 호출
-    dfs(idx + 1, sum - numbers[idx]);
-  };
-
-  dfs(0, 0); // 첫 시작은 0번째 인덱스, 총합은 0으로 시작
-
-  return answer; // 경우의 수 리턴
+  return -1; // 다 돌았는데 최단거리 없으면 -1 반환
 }
+
+// 최단거리라서 미로탈출과 비슷하다고 생각했음
+// 동일하게 작성하니 1/3은 안된다고 하고 1/3은 런타임오류
+// 결국 다른 사람 풀이 확인함
