@@ -1,0 +1,13 @@
+const fs = require("fs");
+const fileSync = process.platform === "linux" ? "/dev/stdin" : "input.txt";
+let input = Number(fs.readFileSync(fileSync).toString().trim().split("\n")[0]);
+
+//fibonacci
+let dp = Array(91).fill(0);
+dp[1] = 1;
+
+for (let i = 2; i < input + 1; i++) {
+    dp[i] = BigInt(dp[i - 1]) + BigInt(dp[i - 2]);
+}
+
+console.log(dp[input].toString());
