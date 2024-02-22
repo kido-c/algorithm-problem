@@ -1,0 +1,23 @@
+//1로 만들기
+const fs = require("fs");
+const fileSync = process.platform === "linux" ? "/dev/stdin" : "input.txt";
+let input = Number(fs.readFileSync(fileSync).toString().trim().split("\n")[0]);
+
+// 10을 1로 만드는 최소 횟수
+// 재귀 호출!
+// (9를 1로 만드는 최소 횟수) + 1
+// (5를 1로 만드는 최소 횟수) + 1
+
+let dp = Array(input + 1).fill(0);
+// dp[i] = i를 1로 만드는 최소 횟수
+// dp[2] = (2를 1로 만드는 최소 횟수)
+// dp[3] = (3을 1로 만드는 최소 횟수)
+// 미리 다 구해 놓음
+
+for (let i = 2; i <= input; i++) {
+    dp[i] = dp[i - 1] + 1; // 일단 1 빼보기
+    if(i % 2 === 0) dp[i] = Math.min(dp[i], dp[i / 2] + 1); // 1뺀거랑 2나눈거 비교
+    if(i % 3 === 0) dp[i] = Math.min(dp[i], dp[i / 3] + 1);
+}
+
+console.log(dp[input]);
