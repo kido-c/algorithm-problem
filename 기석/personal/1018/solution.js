@@ -1,37 +1,44 @@
 const fs = require("fs");
-let input = fs
-  .readFileSync(__dirname + "/input.txt")
-  .toString()
-  .trim()
-  .split("\n");
+const fileSync =
+  process.platform === "linux" ? "/dev/stdin" : __dirname + "/input.txt";
+const input = fs.readFileSync(fileSync).toString().trim().split("\n");
 
-const [N, M] = input[0].split(" ");
-const board = input.slice(1).map((v) => v.split(""));
+const [T, ...board] = input;
 
-let count = 0;
-for (let i = 0; i < N; i++) {
-  let start = board[i][0];
-  if (i > 0 && board[i - 1][0] === board[i][0]) {
-    if (board[i - 1][0] === "B") {
-      start = "W";
-    }
-    if (board[i - 1][0] === "W") {
-      start = "B";
+const boardGraph = board.map((v) => v.split(""));
+
+function makeChase(x, y) {
+  let count = 0;
+  let standard = boardGraph[x][y];
+  let isOddstandardNumber = (x + y) % 2;
+
+  for (let i = x; i < x + 8; i++) {
+    for (let j = y; j < y + 8; j++) {
+      if (isOddstandardNumber === 0) {
+        if ((i + j) % 2 === 0 && standard !== boardGraph[i][j]) {
+          count++;
+        } else if ((i + j) % 2 !== 0 && standard === boardGraph[i][j]) {
+          count++;
+        }
+      } else {
+        if ((i + j) % 2 === 0 && standard === boardGraph[i][j]) {
+          count++;
+        } else if ((i + j) % 2 !== 0 && standard !== boardGraph[i][j]) {
+          count++;
+        }
+      }
     }
   }
-  for (let j = 0; j < M; j++) {
-    let isOdd = (j + 1) % 2 !== 0;
 
-    if (isOdd) {
-      // 홀수
-
-      start !== board[i][j] && count++;
-    } else {
-      // 짝수
-
-      start === board[i][j] && count++;
-    }
+  return count;
+}
+const graph = T.split(" ").map(Number);
+let arr = [];
+for (let z = 0; z <= graph[0] - 8; z++) {
+  for (let w = 0; w <= graph[1] - 8; w++) {
+    arr.push(makeChase(z, w));
   }
 }
 
-console.log(count);
+console.log(arr);
+console.log(Math.min(...arr));
